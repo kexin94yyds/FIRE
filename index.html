@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FIRE·</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>FIRE</h1>
+    <p class="subtitle">
+  </header>
+
+  <main class="container">
+
+    <section class="card" id="dca-card">
+      <h2>定投换算器</h2>
+      
+      <!-- 一键获取汇率按钮 -->
+      <div class="market-fetch">
+        <button id="btn_fetch_market" class="secondary">一键获取汇率</button>
+        <button id="btn_manual_calc" class="primary">手动换算</button>
+        <span class="hint small" id="market_status">—</span>
+      </div>
+
+      <!-- 换算项目列表 -->
+      <div class="conversion-list">
+        <!-- 币种选择行 -->
+        <div class="conversion-item coin-selection-row" id="coin-selection-trigger">
+          <div class="item-label">选择币种</div>
+          <div class="item-input">
+            <span class="selected-coin-display" id="selected-coin-display">BTC</span>
+            <span class="expand-icon">▼</span>
+          </div>
+        </div>
+        
+        <!-- 币种选择展开区域 -->
+        <div class="coin-selection-expanded" id="coin-selection-expanded" style="display: none;">
+          <div class="coin-buttons-grid">
+            <button class="coin-btn-expanded active" data-coin="BTC" data-cg="bitcoin" data-binance="BTCUSDT">BTC</button>
+            <button class="coin-btn-expanded" data-coin="ETH" data-cg="ethereum" data-binance="ETHUSDT">ETH</button>
+            <button class="coin-btn-expanded" data-coin="AI DOG" data-cg="dogecoin" data-binance="DOGEUSDT">AI DOG</button>
+            <button class="coin-btn-expanded" data-coin="ADA" data-cg="cardano" data-binance="ADAUSDT">ADA</button>
+          </div>
+        </div>
+        
+        <!-- 当前选中币种行 -->
+        <div class="conversion-item" id="selected-coin-row">
+          <div class="item-label" id="selected-coin-label">BTC</div>
+          <div class="item-input">
+            <input type="number" id="btc_amount" min="0" step="0.000001" placeholder="0.000000">
+          </div>
+        </div>
+        
+        <div class="conversion-item">
+          <div class="item-label">USDT</div>
+          <div class="item-input">
+            <input type="number" id="usdt_amount" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+        <div class="conversion-item">
+          <div class="item-label">CNY</div>
+          <div class="item-input">
+            <input type="number" id="cny_amount" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+        <div class="conversion-item">
+          <div class="item-label">饭 🍚 (顿)</div>
+          <div class="item-input">
+            <input type="number" id="rice_amount" min="0" step="1" placeholder="0">
+          </div>
+        </div>
+        <div class="conversion-item">
+          <div class="item-label">AI 👑 (月)</div>
+          <div class="item-input">
+            <input type="number" id="ai_amount" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+        <div class="conversion-item">
+          <div class="item-label">iPhone</div>
+          <div class="item-input">
+            <input type="number" id="iphone_amount" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+      <!-- 价格设置区域 -->
+      <div class="price-settings">
+        <h3>价格设置</h3>
+        <div class="price-grid">
+          <label><span id="label_price_coin">BTC</span>价格（USD）
+            <input type="number" id="price_btc_usd" min="0" step="10" placeholder="自动获取">
+          </label>
+          <label>USD/CNY汇率
+            <input type="number" id="rate_usd_cny" min="0" step="0.01" placeholder="自动获取">
+          </label>
+          <label>饭价格（CNY/份）
+            <input type="number" id="price_rice_cny" min="0" step="1" value="20">
+          </label>
+          <label>AI价格（USD/月）
+            <input type="number" id="price_ai_usd" min="0" step="0.01" value="20">
+          </label>
+          <label>iPhone价格（USD）
+            <input type="number" id="price_iphone_usd" min="0" step="10" value="999">
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="note-card">
+      <h2>说明</h2>
+      <ul class="notes">
+        <li><strong>定投换算：</strong>支持 BTC、ETH、AI DOG、ADA 四种币种与其他资产的实时换算。</li>
+        <li><strong>换算项目：</strong>USDT、CNY、饭🍚(碗)、AI👑(月)、iPhone 等日常参考物品。</li>
+        <li>一键获取汇率功能会自动获取当前币种价格和 USD/CNY 汇率。</li>
+        <li>输入任意一个数值后，点击"手动换算"按钮进行换算。</li>
+        <li>所有换算基于当前市场价格，仅供参考。</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>© 2025 我们的价值</span>
+  </footer>
+
+  <script src="./app.js"></script>
+  
+</body>
+<style>
+</style>
+</html>
+
