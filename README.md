@@ -1,6 +1,6 @@
-# 定投换算器 (Fixed Investment Converter)
+# FIRE - 定投换算器 (Fixed Investment Converter)
 
-一个简单而实用的加密货币与日常物品换算工具，帮助你直观地理解数字资产的价值。
+一个简单而实用的加密货币与日常物品换算工具，帮助你直观地理解数字资产的价值，实现财务自由（FIRE - Financial Independence, Retire Early）。
 
 ## 功能特点
 
@@ -45,6 +45,14 @@
 
 访问 [GitHub Pages](https://kexin94yyds.github.io/FIRE/) 体验在线版本。
 
+## FIRE 理念
+
+FIRE (Financial Independence, Retire Early) 是一种财务自由理念，通过合理的投资和理财规划，实现提前退休的目标。这个工具帮助你：
+
+- 📊 **量化投资价值**: 将抽象的加密货币价值转化为具体的生活物品
+- 🎯 **制定投资目标**: 明确需要多少资产才能实现财务自由
+- 💡 **理性投资决策**: 通过直观的换算避免情绪化投资
+
 ## 许可证
 
 MIT License
@@ -55,4 +63,4 @@ MIT License
 
 ---
 
-*让数字资产的价值更直观，让投资决策更明智。*
+*让数字资产的价值更直观，让投资决策更明智，让财务自由更近一步。*

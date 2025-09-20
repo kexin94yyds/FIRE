@@ -37,7 +37,9 @@
   function $(id) { return document.getElementById(id); }
 
 
+  // 资产元数据：仅加密资产（默认 BTC）
   let selectedCoin = { symbol: 'BTC', cg: 'bitcoin', binance: 'BTCUSDT' };
+  // 最近编辑输入基准逻辑已撤销
 
   function getSelectedCoinMeta() {
     return selectedCoin;
@@ -96,6 +98,7 @@
         return await res.json();
       } catch (_) { return null; }
     }
+    // 无需文本接口
 
     const coin = getSelectedCoinMeta();
     const symbol = coin.symbol;
@@ -184,7 +187,7 @@
      }
   }
 
-  // 简化的换算逻辑
+  // 简化的换算逻辑（按固定优先级选择基准）
   function calculateAllConversions() {
     // 获取所有价格数据
     const coinUsd = parseNumber($("price_btc_usd").value);
@@ -201,9 +204,8 @@
     const aiAmount = parseNumber($("ai_amount").value);
     const iphoneAmount = parseNumber($("iphone_amount").value);
 
-    // 找到第一个有值的输入，计算基准USD
     let baseUsd = 0;
-    
+    // 找到第一个有值的输入，计算基准USD（优先级：币→USDT→CNY→饭→AI→iPhone）
     if (coinAmount > 0 && coinUsd > 0) {
       baseUsd = coinAmount * coinUsd;
     } else if (usdtAmount > 0) {
@@ -275,8 +277,7 @@
       });
     });
 
-    // 移除自动换算事件监听器 - 用户输入时不自动换算
-    // 只有在点击"一键获取"或"手动换算"时才进行换算
+    // 不跟踪最近编辑输入，不自动换算
     
     // 价格设置输入框事件 - 价格变化时也不自动换算
     // $("price_btc_usd").addEventListener('input', calculateAllConversions);
