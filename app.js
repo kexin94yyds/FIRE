@@ -38,6 +38,7 @@
 
 
   // 资产元数据：仅加密资产（默认 BTC）
+  // 字段：symbol, cg(可选), binance(可选), dexAddress(可选)
   let selectedCoin = { symbol: 'BTC', cg: 'bitcoin', binance: 'BTCUSDT' };
   // 最近编辑输入基准逻辑已撤销
 
@@ -105,26 +106,64 @@
     // Try multiple coin/USD sources, prefer Coingecko (CORS 开放)
     let coinUsd = 0;
     const cors = 'https://cors.isomorphic-git.org/';
-    const btcSources = [
-      // Coingecko Simple Price
-      async () => {
-        const data = await getJSON(`https://api.coingecko.com/api/v3/simple/price?ids=${coin.cg}&vs_currencies=usd`);
-        return data && data[coin.cg] && data[coin.cg].usd ? Number(data[coin.cg].usd) : 0;
-      },
-      async () => {
-        const data = await getJSON(`${cors}https://api.coingecko.com/api/v3/simple/price?ids=${coin.cg}&vs_currencies=usd`);
-        return data && data[coin.cg] && data[coin.cg].usd ? Number(data[coin.cg].usd) : 0;
-      },
-      // Binance 现货价格
-      async () => {
-        const data = await getJSON(`https://api.binance.com/api/v3/ticker/price?symbol=${coin.binance}`);
-        return data && data.price ? Number(data.price) : 0;
-      },
-      async () => {
-        const data = await getJSON(`${cors}https://api.binance.com/api/v3/ticker/price?symbol=${coin.binance}`);
-        return data && data.price ? Number(data.price) : 0;
-      },
-      // Coindesk 作为备用
+    const sources = [];
+
+    // Coingecko Simple Price（仅当配置了 cg）
+    if (coin.cg) {
+      sources.push(
+        async () => {
+          const data = await getJSON(`https://api.coingecko.com/api/v3/simple/price?ids=${coin.cg}&vs_currencies=usd`);
+          return data && data[coin.cg] && data[coin.cg].usd ? Number(data[coin.cg].usd) : 0;
+        },
+        async () => {
+          const data = await getJSON(`${cors}https://api.coingecko.com/api/v3/simple/price?ids=${coin.cg}&vs_currencies=usd`);
+          return data && data[coin.cg] && data[coin.cg].usd ? Number(data[coin.cg].usd) : 0;
+        }
+      );
+    }
+
+    // Binance 现货价格（仅当配置了 binance）
+    if (coin.binance) {
+      sources.push(
+        async () => {
+          const data = await getJSON(`https://api.binance.com/api/v3/ticker/price?symbol=${coin.binance}`);
+          return data && data.price ? Number(data.price) : 0;
+        },
+        async () => {
+          const data = await getJSON(`${cors}https://api.binance.com/api/v3/ticker/price?symbol=${coin.binance}`);
+          return data && data.price ? Number(data.price) : 0;
+        }
+      );
+    }
+
+    // DexScreener（用于像 AIDOG 这种仅有合约地址的代币）
+    if (coin.dexAddress) {
+      const pickDexPrice = (data) => {
+        if (!data || !Array.isArray(data.pairs) || data.pairs.length === 0) return 0;
+        // 选择流动性最高的交易对
+        let best = data.pairs[0];
+        for (const p of data.pairs) {
+          const liq = (p.liquidity && p.liquidity.usd) ? Number(p.liquidity.usd) : 0;
+          const bestLiq = (best.liquidity && best.liquidity.usd) ? Number(best.liquidity.usd) : 0;
+          if (liq > bestLiq) best = p;
+        }
+        const price = best && best.priceUsd ? Number(best.priceUsd) : 0;
+        return Number.isFinite(price) ? price : 0;
+      };
+      sources.push(
+        async () => {
+          const data = await getJSON(`https://api.dexscreener.com/latest/dex/tokens/${coin.dexAddress}`);
+          return pickDexPrice(data);
+        },
+        async () => {
+          const data = await getJSON(`${cors}https://api.dexscreener.com/latest/dex/tokens/${coin.dexAddress}`);
+          return pickDexPrice(data);
+        }
+      );
+    }
+
+    // Coindesk 作为 BTC 备用
+    sources.push(
       async () => {
         if (symbol !== 'BTC') return 0; // Coindesk 仅 BTC
         const data = await getJSON('https://api.coindesk.com/v1/bpi/currentprice/USD.json');
@@ -135,8 +174,9 @@
         const data = await getJSON(`${cors}https://api.coindesk.com/v1/bpi/currentprice/USD.json`);
         return data && data.bpi && data.bpi.USD && data.bpi.USD.rate_float ? Number(data.bpi.USD.rate_float) : 0;
       }
-    ];
-    for (const fn of btcSources) {
+    );
+
+    for (const fn of sources) {
       coinUsd = await fn();
       if (coinUsd && Number.isFinite(coinUsd)) break;
     }
@@ -265,8 +305,9 @@
       btn.addEventListener('click', () => {
         selectedCoin = {
           symbol: btn.dataset.coin,
-          cg: btn.dataset.cg,
-          binance: btn.dataset.binance
+          cg: btn.dataset.cg || '',
+          binance: btn.dataset.binance || '',
+          dexAddress: btn.dataset.dex || ''
         };
         updateCoinUi();
         // 选择后自动收起
