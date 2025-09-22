@@ -21,7 +21,18 @@ body {
   padding: 32px 16px 8px;
   text-align: center;
 }
-.app-header h1 { margin: 0; font-size: 28px; }
+.app-header h1 { 
+  margin: 0; 
+  font-size: 28px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.fire-icon {
+  width: 32px;
+  height: 32px;
+}
 .subtitle { margin-top: 6px; color: var(--muted); }
 
 .container { max-width: 1000px; margin: 0 auto; padding: 16px; }
